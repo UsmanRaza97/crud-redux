@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import "../App.css"
 import { withRouter } from "react-router-dom"
 import { connect } from "react-redux"
-import { SignInAction } from "./Redux/Actions"
+import { SignInAction } from "../Redux/Actions"
 const SignIn = (props) => {
   useEffect(() => console.log("This is SignIn props", props))
   const [user, setUser] = useState("")
@@ -23,10 +23,14 @@ const SignIn = (props) => {
   const handleFormSubmit = (e) => {
     e.preventDefault()
     // const { user, rememberMe } = this.state;
-    localStorage.setItem("rememberMe", rememberMe)
-    localStorage.setItem("email", rememberMe ? user : "")
-    localStorage.setItem("password", rememberMe ? password : "")
-    props.signIn()
+    // localStorage.setItem("rememberMe", rememberMe)
+    // localStorage.setItem("email", rememberMe ? user : "")
+    // localStorage.setItem("password", rememberMe ? password : "")
+    setPassword("")
+    setUser("")
+    setrememberMe(false)
+    const data = { user: user, password: password }
+    props.signIn(data)
   }
   return (
     <div className="App">
@@ -47,7 +51,11 @@ const SignIn = (props) => {
           />{" "}
           Remember me
         </label>
-        <button type="submit">Sign In</button>
+        {props.loading ? (
+          <button type="submit">Sign In</button>
+        ) : (
+          <p>loading</p>
+        )}
       </form>
       {/* <div>
         <button onClick={props.signIn}>fetch</button>
@@ -57,12 +65,13 @@ const SignIn = (props) => {
 }
 const mapStateToProps = (state) => {
   return {
-    state: state,
+    userToken: state.userToken,
+    loading: state.loading,
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    signIn: () => dispatch(SignInAction()),
+    signIn: (user) => dispatch(SignInAction(user)),
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SignIn))

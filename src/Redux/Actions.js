@@ -18,21 +18,21 @@ export const SignInFailure = (error) => {
     payload: error,
   }
 }
-export const SignInAction = () => {
-  const email = localStorage.getItem("email")
-  const password = localStorage.getItem("password")
-  console.log("data is ", email, password)
+export const SignInAction = (data) => {
+  // const email = localStorage.getItem("email")
+  // const passwor = localStorage.getItem("password")
+  console.log("data is ", data)
   return (dispatch) => {
     dispatch(SignInRequest())
     axios
       .post("https://staging-api.20miles.us/api/auth/sign_in", {
-        email: email,
-        password: password,
+        email: data.user,
+        password: data.password,
       })
       .then((res) => {
-        const data = res.data
+        const data = res
         dispatch(SignInSuccess(data))
-        console.log("response", res.data)
+        console.log("response header", res.headers)
       })
       .catch((err) => {
         const error = err
