@@ -1,7 +1,7 @@
 import React from "react"
 import SignIn from "./Components/SignIn"
 import SignUp from "./Components/SignUp"
-import { Switch, Route, Redirect } from "react-router-dom"
+import { Switch, Route } from "react-router-dom"
 const App = () => {
   return (
     <Switch>

@@ -1,42 +1,57 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import "../App.css"
-import axios from "axios"
 import { withRouter } from "react-router-dom"
 import { connect } from "react-redux"
 import { SignInAction } from "./Redux/Actions"
 const SignIn = (props) => {
-  console.log("SignIn props are", props)
-  const [input, setinput] = useState("")
+  useEffect(() => console.log("This is SignIn props", props))
+  const [user, setUser] = useState("")
   const [password, setPassword] = useState("")
-  const handleInput = (e) => {
-    setinput(e.target.value)
+  const [rememberMe, setrememberMe] = useState(false)
+  const handleUser = (e) => {
+    setUser(e.target.value)
   }
   const handlePassword = (e) => {
-    console.log("handle password", e.target.value)
+    // console.log("handle password", e.target.value)
     setPassword(e.target.value)
   }
+  const handleCheck = () => {
+    // console.log("this is handle check", e.target.value)
+    setrememberMe(!rememberMe)
+  }
 
+  const handleFormSubmit = (e) => {
+    e.preventDefault()
+    // const { user, rememberMe } = this.state;
+    localStorage.setItem("rememberMe", rememberMe)
+    localStorage.setItem("email", rememberMe ? user : "")
+    localStorage.setItem("password", rememberMe ? password : "")
+    props.signIn()
+  }
   return (
     <div className="App">
-      <div>
-        <p>Email</p>{" "}
-        <input
-          style={{ width: 200, height: 20 }}
-          onChange={handleInput}
-          value={input}
-        />
-      </div>
-
-      <div>
-        <p>password</p>{" "}
-        <input
-          style={{ width: 200, height: 20 }}
-          onChange={handlePassword}
-          value={password}
-        />
-      </div>
-
-      <button onClick={props.signIn}>fetch</button>
+      <form onSubmit={handleFormSubmit}>
+        <label>
+          User: <input name="user" value={user} onChange={handleUser} />
+        </label>
+        <label>
+          password:{" "}
+          <input name="password" value={password} onChange={handlePassword} />
+        </label>
+        <label>
+          <input
+            name="rememberMe"
+            checked={rememberMe}
+            onChange={handleCheck}
+            type="checkbox"
+          />{" "}
+          Remember me
+        </label>
+        <button type="submit">Sign In</button>
+      </form>
+      {/* <div>
+        <button onClick={props.signIn}>fetch</button>
+      </div> */}
     </div>
   )
 }
