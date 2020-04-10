@@ -1,4 +1,11 @@
-import { SIGN_IN_REQUEST, SIGN_IN_SUCCESS, SIGN_IN_FAILURE } from "./Constants"
+import {
+  SIGN_IN_REQUEST,
+  SIGN_IN_SUCCESS,
+  SIGN_IN_FAILURE,
+  GET_CONTACT_REQUEST,
+  GET_CONTACT_SUCCESS,
+  GET_CONTACT_FAILURE,
+} from "./Constants"
 import axios from "axios"
 export const SignInRequest = () => {
   return {
@@ -18,10 +25,48 @@ export const SignInFailure = (error) => {
     payload: error,
   }
 }
+
+export const getContactRequest = () => {
+  return {
+    type: GET_CONTACT_REQUEST,
+  }
+}
+export const getContactSuccess = (contacts) => {
+  return {
+    type: GET_CONTACT_SUCCESS,
+    payload: contacts,
+  }
+}
+export const getContactFailure = (error) => {
+  return {
+    type: GET_CONTACT_FAILURE,
+    payload: error,
+  }
+}
+
+export const GetContacts = () => {
+  return (dispatch) => {
+    dispatch(getContactRequest())
+    const headers = JSON.parse(localStorage.getItem("headers"))
+    axios
+      .get(
+        " https://staging-api.20miles.us/api/contacts.json?page=1&per_page=10",
+        { headers: headers }
+      )
+      .then((res) => {
+        console.log(res.data.contacts)
+        const contacts = res.data.contacts
+        dispatch(getContactSuccess(contacts))
+      })
+      .catch((err) => {
+        console.log(err)
+        const error = err
+        dispatch(getContactFailure(error))
+      })
+  }
+}
+
 export const SignInAction = (data) => {
-  // const email = localStorage.getItem("email")
-  // const passwor = localStorage.getItem("password")
-  console.log("data is ", data)
   return (dispatch) => {
     dispatch(SignInRequest())
     axios
