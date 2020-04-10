@@ -7,6 +7,7 @@ export const Reducer = (state = initState, action) => {
   switch (action.type) {
     case SIGN_IN_REQUEST:
       return {
+        ...state,
         loading: !state.loading,
       }
     case SIGN_IN_SUCCESS:
