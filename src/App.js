@@ -5,18 +5,13 @@ import Home from "./Components/Home"
 import { Switch, Route, Redirect } from "react-router-dom"
 import { connect } from "react-redux"
 const App = ({ data }) => {
-  useEffect(() => console.log("props of Apps are", data.headers))
-  // const accessToken = data.headers.access-token
-  // console.log("access token", accessToken)
-  // let accessToken = {}
-  // accessToken = headers.headers
-  // console.log("accessToken is Apps", accessToken)
+  const accessToken = JSON.parse(localStorage.getItem("headers"))
   return (
     <Switch>
       <Route
         exact
         path="/"
-        render={() => (data.headers ? <Redirect to="/home" /> : <SignIn />)}
+        render={() => (accessToken ? <Redirect to="/home" /> : <SignIn />)}
       />
       <Route path="/signup" component={SignUp} />
       <Route exact path="/home" component={Home} />

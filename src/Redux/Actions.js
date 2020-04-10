@@ -31,6 +31,8 @@ export const SignInAction = (data) => {
       })
       .then((res) => {
         const data = res
+        const headers = res.headers
+        localStorage.setItem("headers", JSON.stringify(headers))
         dispatch(SignInSuccess(data))
         console.log("response header", res.headers)
       })
