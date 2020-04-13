@@ -5,10 +5,9 @@ import { GetContacts } from "../Redux/Actions"
 const App = (props) => {
   useEffect(() => console.log("props of home are", props))
   const [singleContact, setSingleContacts] = useState()
-
+  const headers = JSON.parse(localStorage.getItem("headers"))
   const getSingleContact = () => {
-    console.log("clicked")
-    const headers = JSON.parse(localStorage.getItem("headers"))
+    console.log("clicked", headers)
     axios
       .get("https://staging-api.20miles.us/api/contacts/pcjkkket", {
         headers: headers,
@@ -22,14 +21,13 @@ const App = (props) => {
   }
 
   const addContact = () => {
-    console.log("clicked")
+    console.log("clicked", headers)
     const body = {
       company_id: 2372,
       email: "usmanraza@evolverstech.com",
       firstname: "usman",
       lastname: "raza",
     }
-    const headers = JSON.parse(localStorage.getItem("headers"))
     axios
       .post("https://staging-api.20miles.us/api/contacts.json", body, {
         headers: headers,
@@ -38,35 +36,38 @@ const App = (props) => {
       .catch((err) => console.log("add contact error", err))
   }
 
-  const deleteContact = () => {
-    const headers = JSON.parse(localStorage.getItem("headers"))
-    console.log("clicked")
-    axios
-      .delete("https://staging-api.20miles.us/api/contacts/pcjkkket.json", {
-        headers: headers,
-      })
-      .then((res) => {
-        console.log(console.log("delete contact"), res)
-      })
-      .catch((err) => {
-        console.log("error is ", err)
-      })
-  }
-
-  const updateContact = () => {
+  const updateContact = (key) => {
+    console.log("update contact ate", key, headers)
     const body = {
       company_id: 2372,
       email: "usmanraza@evolverstech.com",
       firstname: "usman",
       lastname: "raza",
     }
-    const headers = JSON.parse(localStorage.getItem("headers"))
     axios
-      .put("https://staging-api.20miles.us/api/contacts/dsghp25n.json", body, {
-        headers: headers,
-      })
+      .put(
+        "https://staging-api.20miles.us/api/contacts/" + key + ".json",
+        body,
+        {
+          headers: headers,
+        }
+      )
       .then((res) => console.log(res))
       .catch((err) => console.log(err))
+  }
+
+  const handleDelete = (key) => {
+    console.log("handle delete", key, headers)
+    axios
+      .delete("https://staging-api.20miles.us/api/contacts/" + key + ".json", {
+        headers: headers,
+      })
+      .then((res) => {
+        console.log("delete contact", res)
+      })
+      .catch((err) => {
+        console.log("error is ", err)
+      })
   }
 
   return (
@@ -74,13 +75,22 @@ const App = (props) => {
       <button onClick={() => props.getContacts()}>fetch contacts</button>
       <button onClick={getSingleContact}>get Single Contact</button>
       <button onClick={addContact}>Add Contact</button>
-      <button onClick={deleteContact}>Delete Contact</button>
-      <button onClick={updateContact}>Update Contact</button>
 
       {props.contacts.map((contact) => (
         <li key={contact.id}>
           {contact.lastname}
-          <button style={{ marginLeft: 20 }}>Delete</button>
+          <button
+            onClick={() => handleDelete(contact.key)}
+            style={{ marginLeft: 20 }}
+          >
+            Delete
+          </button>
+          <button
+            onClick={() => updateContact(contact.key)}
+            style={{ marginLeft: 20 }}
+          >
+            Edit
+          </button>
         </li>
       ))}
 
