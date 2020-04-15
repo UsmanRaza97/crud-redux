@@ -16,16 +16,11 @@ const SignIn = (props) => {
     setPassword(e.target.value)
   }
   const handleCheck = () => {
-    // console.log("this is handle check", e.target.value)
     setrememberMe(!rememberMe)
   }
 
   const handleFormSubmit = (e) => {
     e.preventDefault()
-    // const { user, rememberMe } = this.state;
-    // localStorage.setItem("rememberMe", rememberMe)
-    // localStorage.setItem("email", rememberMe ? user : "")
-    // localStorage.setItem("password", rememberMe ? password : "")
     setPassword("")
     setUser("")
     setrememberMe(false)
@@ -67,6 +62,7 @@ const mapStateToProps = (state) => {
   return {
     userToken: state.userToken,
     loading: state.loading,
+    token: state.token,
   }
 }
 const mapDispatchToProps = (dispatch) => {

@@ -5,11 +5,18 @@ import {
   GET_CONTACT_REQUEST,
   GET_CONTACT_SUCCESS,
   GET_CONTACT_FAILURE,
+  AUTH_ACTION,
+  SEARCH_REQUEST,
+  SEARCH_SUCCESS,
+  SEARCH_FAILURE,
 } from "./Constants"
 const initState = {
   loading: true,
   userToken: {},
   contacts: [],
+  token: false,
+  searched: [],
+  searchedErr: "",
 }
 export const Reducer = (state = initState, action) => {
   switch (action.type) {
@@ -19,7 +26,6 @@ export const Reducer = (state = initState, action) => {
         loading: !state.loading,
       }
     case SIGN_IN_SUCCESS:
-      console.log("sign in success", action.payload)
       return {
         ...state,
         userToken: action.payload,
@@ -44,6 +50,25 @@ export const Reducer = (state = initState, action) => {
       return {
         ...state,
         contacts: action.payload,
+      }
+    case AUTH_ACTION:
+      return {
+        ...state,
+        token: !state.token,
+      }
+    case SEARCH_REQUEST:
+      return {
+        ...state,
+      }
+    case SEARCH_SUCCESS:
+      return {
+        ...state,
+        searched: action.payload,
+      }
+    case SEARCH_FAILURE:
+      return {
+        ...state,
+        searchedErr: action.payload,
       }
     default:
       return state

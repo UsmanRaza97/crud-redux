@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react"
 import { connect } from "react-redux"
 import axios from "axios"
-import { GetContacts } from "../Redux/Actions"
+import { GetContacts, Auth, SearchAction } from "../Redux/Actions"
+import { baseUrl } from "./apiServices"
+import { withRouter } from "react-router-dom"
 const App = (props) => {
-  useEffect(() => console.log("props of home are", props))
+  useEffect(() => {
+    console.log("props of home are", props)
+  })
   const [singleContact, setSingleContacts] = useState()
+  const [input, setInput] = useState("")
   const headers = JSON.parse(localStorage.getItem("headers"))
   const getSingleContact = () => {
     console.log("clicked", headers)
     axios
-      .get("https://staging-api.20miles.us/api/contacts/pcjkkket", {
+      .get("https://staging-api.20miles.us/api/contacts/ymvb8u99", {
         headers: headers,
       })
       .then((res) => {
@@ -29,7 +34,7 @@ const App = (props) => {
       lastname: "raza",
     }
     axios
-      .post("https://staging-api.20miles.us/api/contacts.json", body, {
+      .post(`${baseUrl}.json`, body, {
         headers: headers,
       })
       .then((res) => console.log("add contact response", res))
@@ -40,45 +45,82 @@ const App = (props) => {
     console.log("update contact ate", key, headers)
     const body = {
       company_id: 2372,
-      email: "usmanraza@evolverstech.com",
-      firstname: "usman",
+      email: "abc@evolverstech.com",
+      firstname: "karam",
       lastname: "raza",
     }
     axios
-      .put(
-        "https://staging-api.20miles.us/api/contacts/" + key + ".json",
-        body,
-        {
-          headers: headers,
-        }
-      )
-      .then((res) => console.log(res))
+      .put(`${baseUrl}/${key}.json`, body, {
+        headers: headers,
+      })
+      .then((res) => {
+        console.log(res)
+        props.getContacts()
+      })
       .catch((err) => console.log(err))
   }
 
   const handleDelete = (key) => {
     console.log("handle delete", key, headers)
     axios
-      .delete("https://staging-api.20miles.us/api/contacts/" + key + ".json", {
+      .delete(`${baseUrl}/${key}.json`, {
         headers: headers,
       })
       .then((res) => {
         console.log("delete contact", res)
+        props.getContacts()
       })
       .catch((err) => {
         console.log("error is ", err)
       })
   }
 
+  const logoutHandler = () => {
+    console.log("logout handler is ")
+    localStorage.removeItem("headers")
+    props.auth()
+    props.history.push("/")
+  }
+  const handleChange = (e) => {
+    setInput(e.target.value)
+    console.log("handle change input ", input)
+  }
+  const hanldeSearch = () => {
+    props.search(input)
+  }
   return (
-    <div>
-      <button onClick={() => props.getContacts()}>fetch contacts</button>
-      <button onClick={getSingleContact}>get Single Contact</button>
-      <button onClick={addContact}>Add Contact</button>
+    <div className="container">
+      <div className="col-12" style={{ marginTop: 20 }}>
+        <button className="btn btn-success" onClick={() => props.getContacts()}>
+          fetch contacts
+        </button>
+        <button
+          style={{ marginLeft: 10 }}
+          className="btn btn-primary"
+          onClick={getSingleContact}
+        >
+          get Single Contact
+        </button>
+        <button
+          style={{ marginLeft: 10 }}
+          className="btn btn-danger"
+          onClick={addContact}
+        >
+          Add Contact
+        </button>
 
+        <button
+          style={{ marginLeft: 10 }}
+          className="btn btn-danger"
+          onClick={logoutHandler}
+        >
+          logout
+        </button>
+      </div>
       {props.contacts.map((contact) => (
         <li key={contact.id}>
           {contact.lastname}
+
           <button
             onClick={() => handleDelete(contact.key)}
             style={{ marginLeft: 20 }}
@@ -89,12 +131,37 @@ const App = (props) => {
             onClick={() => updateContact(contact.key)}
             style={{ marginLeft: 20 }}
           >
-            Edit
+            update
           </button>
         </li>
       ))}
-
-      <li>{singleContact}</li>
+      <div style={{ display: "flex", marginTop: 10, flexDirection: "column" }}>
+        <div style={{ display: "flex" }}>
+          <input
+            type="text"
+            className="form-control"
+            id="usr"
+            onChange={handleChange}
+          />
+          <button
+            style={{ marginLeft: 10 }}
+            className="btn btn-danger"
+            onClick={hanldeSearch}
+          >
+            search
+          </button>
+        </div>
+        {props.searchList.map((contact) => (
+          <li key={contact.id}>
+            {contact.firstname}-{contact.lastname}
+            {"  "}
+            <button type="button" class="btn btn-primary">
+              Delete
+            </button>
+          </li>
+        ))}
+      </div>
+      {/* <li>{singleContact}</li> */}
     </div>
   )
 }
@@ -102,12 +169,15 @@ const App = (props) => {
 const mapStateToProps = (state) => {
   return {
     contacts: state.contacts,
+    searchList: state.searched,
   }
 }
 const mapdispatchToProps = (dispatch) => {
   return {
     getContacts: () => dispatch(GetContacts()),
+    auth: () => dispatch(Auth()),
+    search: (keyword) => dispatch(SearchAction(keyword)),
   }
 }
 
-export default connect(mapStateToProps, mapdispatchToProps)(App)
+export default connect(mapStateToProps, mapdispatchToProps)(withRouter(App))
