@@ -4,12 +4,15 @@ import axios from "axios"
 import { GetContacts, Auth, SearchAction } from "../Redux/Actions"
 import { baseUrl } from "./apiServices"
 import { withRouter } from "react-router-dom"
+
 const App = (props) => {
+  const { contacts = [] } = props
   useEffect(() => {
     console.log("props of home are", props)
   })
   const [singleContact, setSingleContacts] = useState()
   const [input, setInput] = useState("")
+  const [Email, setEmail] = useState("")
   const headers = JSON.parse(localStorage.getItem("headers"))
   const getSingleContact = () => {
     console.log("clicked", headers)
@@ -45,9 +48,9 @@ const App = (props) => {
     console.log("update contact ate", key, headers)
     const body = {
       company_id: 2372,
-      email: "abc@evolverstech.com",
-      firstname: "karam",
-      lastname: "raza",
+      email: "cde@evolverstech.com",
+      firstname: "rani",
+      lastname: "ganja",
     }
     axios
       .put(`${baseUrl}/${key}.json`, body, {
@@ -83,7 +86,6 @@ const App = (props) => {
   }
   const handleChange = (e) => {
     setInput(e.target.value)
-    console.log("handle change input ", input)
   }
   const hanldeSearch = () => {
     props.search(input)
@@ -117,7 +119,7 @@ const App = (props) => {
           logout
         </button>
       </div>
-      {props.contacts.map((contact) => (
+      {contacts.map((contact) => (
         <li key={contact.id}>
           {contact.lastname}
 
@@ -152,13 +154,40 @@ const App = (props) => {
           </button>
         </div>
         {props.searchList.map((contact) => (
-          <li key={contact.id}>
-            {contact.firstname}-{contact.lastname}
-            {"  "}
-            <button type="button" class="btn btn-primary">
-              Delete
-            </button>
-          </li>
+          <div
+            key={contact.id}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              justifyContent: "space-between",
+              marginTop: 10,
+              borderBottom: "1px solid gray",
+              alignItems: "center",
+              padding: 10,
+              width: "95%",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {contact.firstname}-{contact.lastname}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <button type="button" class="btn btn-primary">
+                Delete
+              </button>
+            </div>
+          </div>
         ))}
       </div>
       {/* <li>{singleContact}</li> */}

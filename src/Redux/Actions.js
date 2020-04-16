@@ -80,10 +80,7 @@ export const GetContacts = () => {
     dispatch(getContactRequest())
     const headers = JSON.parse(localStorage.getItem("headers"))
     axios
-      .get(
-        " https://staging-api.20miles.us/api/contacts.json?page=1&per_page=10",
-        { headers: headers }
-      )
+      .get(` ${baseUrl}.json?page=1&per_page=10`, { headers: headers })
       .then((res) => {
         console.log("response is ", res.headers)
 
@@ -104,7 +101,7 @@ export const SearchAction = (keyword) => {
   return (dispatch) => {
     dispatch(searchRequest)
     axios
-      .get(baseUrl + ".json?page=1&per_page=10&keyword=" + keyword, {
+      .get(`${baseUrl}.json?page=1&per_page=10&keyword=${keyword}`, {
         headers: headers,
       })
       .then((res) => {

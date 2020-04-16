@@ -3,6 +3,9 @@ import "../App.css"
 import { withRouter } from "react-router-dom"
 import { connect } from "react-redux"
 import { SignInAction } from "../Redux/Actions"
+import Input from "./Utils/Input"
+import FormInput from "./FormInput/FormInput"
+import Modal from "react-responsive-modal"
 const SignIn = (props) => {
   useEffect(() => console.log("This is SignIn props", props))
   const [user, setUser] = useState("")
@@ -28,33 +31,43 @@ const SignIn = (props) => {
     props.signIn(data)
   }
   return (
-    <div className="App">
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        marginTop: 30,
+        // backgroundColor: "gold",
+      }}
+    >
       <form onSubmit={handleFormSubmit}>
-        <label>
-          User: <input name="user" value={user} onChange={handleUser} />
-        </label>
-        <label>
-          password:{" "}
-          <input name="password" value={password} onChange={handlePassword} />
-        </label>
-        <label>
-          <input
-            name="rememberMe"
-            checked={rememberMe}
-            onChange={handleCheck}
-            type="checkbox"
-          />{" "}
-          Remember me
-        </label>
-        {props.loading ? (
-          <button type="submit">Sign In</button>
-        ) : (
-          <p>loading</p>
-        )}
+        <h2>I already have an account</h2>
+        <span>Sign in with your email and password</span>
+        <FormInput
+          name="email"
+          type="email"
+          value={user}
+          handleChange={handleUser}
+          label="Email"
+          required
+        />
+        <FormInput
+          name="password"
+          type="password"
+          value={password}
+          handleChange={handlePassword}
+          label="Password"
+          required
+        />
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          {props.loading ? (
+            <button className="btn btn-primary" type="submit">
+              Sign In
+            </button>
+          ) : (
+            <p>Loading</p>
+          )}
+        </div>
       </form>
-      {/* <div>
-        <button onClick={props.signIn}>fetch</button>
-      </div> */}
     </div>
   )
 }
